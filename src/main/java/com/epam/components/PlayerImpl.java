@@ -12,38 +12,52 @@ public class PlayerImpl implements Player {
     private static final GameServiceImpl gameService = ApplicationContextHolder.getApplicationContext().getBean(GameServiceImpl.class);
 
 
+
     private int currentPosition;
     private String name;
 
 
     public PlayerImpl(String name) {
         this.name = name;
+        currentPosition = 1;
     }
 
     public PlayerImpl() {
-
+        currentPosition = 1;
     }
 
 
     @Override
     public void takeCube(Cube someCube) {
-        cube = someCube;
+        cube=someCube;
     }
-
-
-    // changePosition() and  makeMove() are key methods that implement the business logic of the class.
-    // Their implementation will be given only after writing tests.
 
     private void changePosition(int scoreOfCube) {
 
-        // Implementation will be given after writing tests
+        if (!gameService.isEndOfGame()) {
+
+            if (currentPosition + scoreOfCube < cellsCount) {
+                currentPosition += scoreOfCube;
+                return;
+            }
+
+            if (currentPosition + scoreOfCube == cellsCount) {
+                currentPosition = cellsCount;
+                gameService.endOfGameSignal();
+
+            }
+
+            // If the previous two possibilities are not realized, then currentPosition+scoreOfCube>cellsCount
+            //the player does not win
+            // and the currentPosition does not change
+        }
 
     }
 
     @Override
     public void makeMove() {
-
-        // Implementation will be given after writing tests
+        int scoreOfCube = cube.toss();
+        changePosition(scoreOfCube);
     }
 
 
